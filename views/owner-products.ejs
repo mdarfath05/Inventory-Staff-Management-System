@@ -1,0 +1,134 @@
+<%- include('partials/header', { title: "Manage Products" }) %>
+
+<div class="back-container">
+  <a href="/dashboard-owner" class="back-button">← Back to Dashboard</a>
+</div>
+<div class="logout-container">
+  <a href="/logout" class="logout-button">Logout</a>
+</div>
+
+
+
+
+<h1 style="text-align: center;">Product Management</h1>
+<div id="lowStockWarning" class="warning-box"></div>
+
+<div class="card">
+  <form id="addProductForm">
+    <input type="hidden" id="productId" name="id">
+    <input type="text" name="name" placeholder="Product Name" required>
+    <input type="number" name="quantity" placeholder="Quantity" required>
+    <input type="number" step="0.01" name="price" placeholder="Price (per unit)" required>
+    <input type="number" name="threshold" placeholder="Restock Threshold" required>
+    <button type="submit">Add Product</button>
+  </form>
+</div>
+
+<table id="productTable"></table>
+
+<script>
+function displayLowStockWarnings(products) {
+  const warningBox = document.getElementById('lowStockWarning');
+  const lowStockItems = products.filter(p => p.quantity <= p.threshold);
+  warningBox.innerHTML = lowStockItems.length
+    ? `<strong>⚠️ Low Stock:</strong><ul>` +
+      lowStockItems.map(p => `<li>${p.name} - Qty: ${p.quantity} (Threshold: ${p.threshold})</li>`).join('') +
+      `</ul>`
+    : '';
+}
+
+window.onload = () => {
+  loadProducts();
+
+  document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const productId = formData.get('id');
+    const data = {
+      name: formData.get('name'),
+      quantity: parseInt(formData.get('quantity')),
+      price: parseFloat(formData.get('price')),
+      threshold: parseInt(formData.get('threshold'))
+    };
+
+    const method = productId ? 'PUT' : 'POST';
+    const url = productId ? `/products/${productId}` : '/products';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      e.target.reset();
+      document.getElementById('productId').value = '';
+      document.querySelector('#addProductForm button').textContent = "Add Product";
+      loadProducts();
+    } else {
+      alert("Failed to add/update product");
+    }
+  });
+
+  async function loadProducts() {
+    const res = await fetch('/products');
+    const products = await res.json();
+    displayLowStockWarnings(products);
+
+    const table = document.getElementById('productTable');
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total Value</th>
+          <th>Threshold</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';
+
+    products.forEach(prod => {
+      const total = (prod.quantity * prod.price).toFixed(2);
+      const escapedData = JSON.stringify(prod).replace(/"/g, '&quot;');
+      tbody.innerHTML += `
+        <tr>
+          <td>${prod.name}</td>
+          <td>${prod.quantity}</td>
+          <td>${prod.price}</td>
+          <td>₹${total}</td>
+          <td>${prod.threshold}</td>
+          <td>
+            <button onclick='editProduct(${escapedData})'>Edit</button>
+            <button onclick='deleteProduct(${prod.id})'>Delete</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  window.deleteProduct = async (id) => {
+    if (!confirm("Are you sure?")) return;
+    const res = await fetch(`/products/${id}`, { method: 'DELETE' });
+    if (res.ok) loadProducts();
+    else alert("Delete failed");
+  };
+
+  window.editProduct = (product) => {
+    document.querySelector('input[name="name"]').value = product.name;
+    document.querySelector('input[name="quantity"]').value = product.quantity;
+    document.querySelector('input[name="price"]').value = product.price;
+    document.querySelector('input[name="threshold"]').value = product.threshold;
+    document.getElementById('productId').value = product.id;
+    document.querySelector('#addProductForm button').textContent = "Update Product";
+  };
+};
+</script>
+
+<%- include('partials/footer') %>
+

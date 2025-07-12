@@ -1,0 +1,119 @@
+<%- include('partials/header', { title: "Staff Dashboard" }) %>
+
+ <div class="logout-container">
+  <a href="/logout" class="logout-button">Logout</a>
+</div>
+<h1>Welcome, <%= username %> (Staff)</h1>
+
+<div id="lowStockWarning" class="warning-box"></div>
+<p>You can only record sales</p>
+
+<div class="card">
+  <h2>Record Sales</h2>
+  <table id="productTable" border="1" style="width: 100%; text-align: center; margin-top: 10px;"></table>
+  <p id="saleMsg" class="message" style="color: red;"></p>
+</div>
+
+<script>
+  function displayLowStockWarnings(products) {
+    const warningBox = document.getElementById('lowStockWarning');
+    const lowStockItems = products.filter(p => p.quantity <= p.threshold);
+
+    if (lowStockItems.length === 0) {
+      warningBox.innerHTML = '';
+      return;
+    }
+
+    let warningsHTML = '<strong>⚠️ Low Stock Alert:</strong><ul>';
+    lowStockItems.forEach(p => {
+      warningsHTML += `<li>${p.name} - Qty: ${p.quantity} (Threshold: ${p.threshold})</li>`;
+    });
+    warningsHTML += '</ul>';
+
+    warningBox.innerHTML = warningsHTML;
+  }
+
+  window.onload = async () => {
+    try {
+      const res = await fetch('/products');
+      const products = await res.json();
+
+      displayLowStockWarnings(products);
+
+      const table = document.getElementById('productTable');
+
+      if (!products || products.length === 0) {
+        table.innerHTML = '<tr><td colspan="5">No products available</td></tr>';
+        return;
+      }
+
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Available</th>
+            <th>Price</th>
+            <th>Sell Qty</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${products.map(prod => `
+            <tr>
+              <td>${prod.name}</td>
+              <td>${prod.quantity}</td>
+              <td>₹${prod.price}</td>
+              <td>
+                <input 
+                  type="number" 
+                  id="qty-${prod.id}" 
+                  min="1" 
+                  max="${prod.quantity}" 
+                  style="width: 60px;"
+                >
+              </td>
+              <td>
+                <button onclick="sellProduct(${prod.id}, ${prod.quantity})">Sell</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+    } catch (err) {
+      document.getElementById('productTable').innerHTML =
+        '<tr><td colspan="5">Error loading products</td></tr>';
+      console.error('Error fetching products:', err);
+    }
+  };
+
+  async function sellProduct(id, maxQty) {
+    const qtyInput = document.getElementById(`qty-${id}`);
+    const quantity = parseInt(qtyInput.value);
+    const msg = document.getElementById('saleMsg');
+
+    if (!quantity || quantity <= 0 || quantity > maxQty) {
+      msg.textContent = 'Enter a valid quantity to sell';
+      msg.style.color = 'red';
+      return;
+    }
+
+    const res = await fetch(`/products/sell/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity })
+    });
+
+    if (res.ok) {
+      msg.textContent = '✅ Sale recorded successfully';
+      msg.style.color = 'green';
+      window.onload(); // refresh data
+    } else {
+      const error = await res.text();
+      msg.textContent = error || 'Sale failed';
+      msg.style.color = 'red';
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>
+

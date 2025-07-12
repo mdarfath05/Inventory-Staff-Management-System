@@ -66,12 +66,21 @@ Clean layout using EJS templates and CSS
 
 Logout button and navigation maintained on all views
 
-<img width="1920" height="1080" alt="Screenshot (279)" src="https://github.com/user-attachments/assets/2e498ad2-df52-4efc-9174-78b7aca62780" />
 
-Admin:
-<img width="1920" height="1080" alt="Screenshot (279)" src="https://github.com/user-attachments/assets/ab0e0601-e6d6-4808-b23c-a2fe82d93201" />
+<img width="1920" height="1080" alt="Screenshot (278)" src="https://github.com/user-attachments/assets/7816d4f8-c2b7-4207-995b-cfcb316d139c" />
+<img width="1920" height="1080" alt="Screenshot (279)" src="https://github.com/user-attachments/assets/8110163d-a792-4d69-acdb-7b55ef274db3" />
 
-Staff:
-<img width="1920" height="1080" alt="Screenshot (286)" src="https://github.com/user-attachments/assets/7ed8332a-2141-41c1-bed5-008be5d94a1a" />
+<h1>Admin features </h1>:
+<img width="1920" height="1080" alt="Screenshot (280)" src="https://github.com/user-attachments/assets/28aa5da7-3340-46f4-b08e-12d8d33a1fe8" />
+
+<img width="1920" height="1080" alt="Screenshot (281)" src="https://github.com/user-attachments/assets/2fdedf76-2d52-4cef-bfc0-a9fe0d2152b2" />
+<img width="1920" height="1080" alt="Screenshot (282)" src="https://github.com/user-attachments/assets/ea27df38-c191-4b4b-94ce-368b4e3b863a" />
+<img width="1920" height="1080" alt="Screenshot (283)" src="https://github.com/user-attachments/assets/74046370-5d6e-41df-8c37-b9100821755a" />
+<img width="1920" height="1080" alt="Screenshot (284)" src="https://github.com/user-attachments/assets/05915c39-c19b-4110-b9ce-cdba0cad5a02" />
+
+<h1>Staff features </h1>:
+<img width="1920" height="1080" alt="Screenshot (285)" src="https://github.com/user-attachments/assets/8c684e94-1af1-4ca0-8228-693d51ded432" />
+<img width="1920" height="1080" alt="Screenshot (286)" src="https://github.com/user-attachments/assets/4c83e73d-1e3e-42d1-a583-6d1f5f50a21a" />
+
 
 

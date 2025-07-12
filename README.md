@@ -1,7 +1,7 @@
-📦 Inventory & Staff Management System
+<h1>📦 Inventory & Staff Management System</h1>
 A simple yet powerful full-stack web application that allows an owner to efficiently manage inventory and staff details. Built using Node.js, Express.js, EJS, and MySQL, the system supports authentication, product tracking, stock threshold alerts, staff salary control, and role-based dashboards.
 
-🔧 Tech Stack
+<h1>🔧 Tech Stack</h1>
 Frontend: HTML, CSS, EJS Templates
 
 Backend: Node.js, Express.js
@@ -12,8 +12,8 @@ Session Management: express-session
 
 Password Encryption: bcrypt
 
-👤 Roles & Permissions
-Owner:
+<h1>👤 Roles & Permissions</h1>
+<h2>Owner:</h2>
 
 Login access
 
@@ -27,7 +27,7 @@ Add, delete staff
 
 View & update staff salaries
 
-Staff:
+<h2>Staff:</h2>
 
 Login access
 
@@ -35,7 +35,7 @@ Dashboard access (view only)
 
 Sell products (reduce stock quantity)
 
-📁 Features
+<h1>📁 Features</h1>
 ✅ Authentication
 Login system with role-based access
 
